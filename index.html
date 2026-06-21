@@ -729,7 +729,6 @@
           <div class="btnRow">
             <button class="mainBtn" id="makeTicketBtn" disabled>예측권 발권하기 🚀</button>
             <button class="subBtn" id="resetTicketBtn">초기화</button>
-            <button class="subBtn" id="clearPreviousBtn" style="display:none;">이전 선택 제거</button>
           </div>
         </div>
 
@@ -1222,22 +1221,6 @@
       State.lastTicketText = "";
       document.querySelectorAll("#ticketGames .choice:not([disabled])").forEach(b => b.classList.remove("active"));
       updateTicketReady();
-
-      if (lastPrediction) {
-        $("clearPreviousBtn").style.display = "inline-block";
-      }
-    }
-
-    function clearPreviousSelection() {
-      const predictions = Storage.getPredictions();
-      if (predictions.length > 0) {
-        predictions.pop();
-        Storage.predictions = predictions;
-        resetTicket();
-        renderTicketGames();
-        updateDashboard();
-        showToast("이전 선택이 제거되었습니다.");
-      }
     }
 
     function renderCompanyList() {
@@ -1438,7 +1421,6 @@
       $("nickname").addEventListener("input", updateTicketReady);
       $("makeTicketBtn").addEventListener("click", renderTicketPreview);
       $("resetTicketBtn").addEventListener("click", resetTicket);
-      $("clearPreviousBtn").addEventListener("click", clearPreviousSelection);
       $("copyTicketBtn").addEventListener("click", () => {
         if (!State.lastTicketText) {
           alert("먼저 예측권을 발권해주세요.");
