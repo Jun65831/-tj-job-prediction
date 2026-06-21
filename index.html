@@ -854,46 +854,25 @@
   <div class="toast" id="toast">복사 완료! 📩</div>
 
   <script>
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbywXK5oQ2pnGe0M3R0wzXquyt8iVliUUnsIWCoOxN-BE7Czq_RrEx8aYtsmaER95LPLDg/exec";
+    // Firebase 설정 (준비 중)
+    // const firebaseConfig = { ... };
 
     const Storage = {
-      companies: [],
-      predictions: [],
-      resultSet: {},
+      companies: [
+        { id: "1", name: "현대자동차", scores: { "최종합격": 50, "2차탈락": 30, "1차탈락": 10, "서류탈락": 1 }, isDefault: true, createdAt: new Date().toISOString() },
+        { id: "2", name: "대한항공", scores: { "최종합격": 15, "2차탈락": 10, "1차탈락": 5, "서류탈락": 1 }, isDefault: true, createdAt: new Date().toISOString() },
+        { id: "3", name: "현대위아", scores: { "최종합격": 30, "2차탈락": 20, "1차탈락": 8, "서류탈락": 1 }, isDefault: true, createdAt: new Date().toISOString() },
+        { id: "4", name: "LG전자", scores: { "최종합격": 25, "2차탈락": 15, "1차탈락": 7, "서류탈락": 1 }, isDefault: true, createdAt: new Date().toISOString() },
+        { id: "5", name: "콘티넨탈오토모티브코리아", scores: { "최종합격": 20, "2차탈락": 12, "1차탈락": 6, "서류탈락": 1 }, isDefault: true, createdAt: new Date().toISOString() },
+        { id: "6", name: "티에이치앤", scores: { "최종합격": 15, "2차탈락": 10, "1차탈락": 5, "서류탈락": 1 }, isDefault: true, createdAt: new Date().toISOString() }
+      ],
 
-      async init() {
-        await this.loadCompanies();
-        await this.loadPredictions();
-        await this.loadResults();
-      },
-
-      async loadCompanies() {
-        try {
-          const response = await fetch(`${GAS_URL}?action=getCompanies`);
-          this.companies = await response.json();
-        } catch (e) {
-          console.error("기업 로드 실패:", e);
-          this.companies = [];
+      init() {
+        if (!localStorage.getItem("predictions")) {
+          localStorage.setItem("predictions", JSON.stringify([]));
         }
-      },
-
-      async loadPredictions() {
-        try {
-          const response = await fetch(`${GAS_URL}?action=getPredictions`);
-          this.predictions = await response.json();
-        } catch (e) {
-          console.error("예측 로드 실패:", e);
-          this.predictions = [];
-        }
-      },
-
-      async loadResults() {
-        try {
-          const response = await fetch(`${GAS_URL}?action=getResults`);
-          this.resultSet = await response.json();
-        } catch (e) {
-          console.error("결과 로드 실패:", e);
-          this.resultSet = {};
+        if (!localStorage.getItem("resultSet")) {
+          localStorage.setItem("resultSet", JSON.stringify({}));
         }
       },
 
@@ -901,74 +880,34 @@
         return this.companies;
       },
 
-      async addCompany(name, scores) {
-        try {
-          await fetch(GAS_URL, {
-            method: "POST",
-            payload: JSON.stringify({
-              action: "addCompany",
-              name,
-              win: scores["승"],
-              draw: scores["무"],
-              lose: scores["패"]
-            })
-          });
-          await this.loadCompanies();
-          return true;
-        } catch (e) {
-          console.error("회사 추가 실패:", e);
-          return false;
-        }
-      },
-
       getPredictions() {
-        return this.predictions;
-      },
-
-      async addPrediction(nickname, picks, totalScore) {
-        try {
-          const companies = this.getCompanies();
-          const picksData = {};
-          companies.forEach(c => {
-            picksData[c.name] = picks[c.name] || "";
-          });
-
-          await fetch(GAS_URL, {
-            method: "POST",
-            payload: JSON.stringify({
-              action: "addPrediction",
-              nickname,
-              picks: picksData,
-              totalScore
-            })
-          });
-          await this.loadPredictions();
-        } catch (e) {
-          console.error("예측 저장 실패:", e);
-        }
+        return JSON.parse(localStorage.getItem("predictions") || "[]");
       },
 
       getResultSet() {
-        return this.resultSet;
+        return JSON.parse(localStorage.getItem("resultSet") || "{}");
       },
 
-      async saveResultSet(results) {
-        try {
-          for (const [company, result] of Object.entries(results)) {
-            if (result) {
-              await fetch(GAS_URL, {
-                method: "POST",
-                payload: JSON.stringify({
-                  action: "updateResults",
-                  [company]: result
-                })
-              });
-            }
-          }
-          await this.loadResults();
-        } catch (e) {
-          console.error("결과 저장 실패:", e);
-        }
+      addPrediction(nickname, picks, totalScore) {
+        const predictions = this.getPredictions();
+        predictions.push({
+          id: Date.now().toString(),
+          nickname,
+          picks,
+          totalScore,
+          createdAt: new Date().toISOString(),
+          companySnapshot: Object.keys(picks)
+        });
+        localStorage.setItem("predictions", JSON.stringify(predictions));
+      },
+
+      deletePrediction(id) {
+        const predictions = this.getPredictions().filter(p => p.id !== id);
+        localStorage.setItem("predictions", JSON.stringify(predictions));
+      },
+
+      saveResultSet(results) {
+        localStorage.setItem("resultSet", JSON.stringify({ ...results, savedAt: new Date().toISOString() }));
       }
     };
 
@@ -1323,8 +1262,8 @@
       showToast("순위 계산 완료! 🏆");
     }
 
-    async function init() {
-      await Storage.init();
+    function init() {
+      Storage.init();
       bindTabs();
       renderTicketGames();
       renderCompanyList();
