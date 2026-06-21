@@ -850,14 +850,17 @@
       <label for="modalCompanyName">기업명</label>
       <input id="modalCompanyName" placeholder="예: 삼성전자" />
 
-      <label for="modalWin" style="margin-top: 14px;">승리 점수</label>
-      <input id="modalWin" type="number" placeholder="50" />
+      <label for="modalFinal" style="margin-top: 14px;">최종합격 점수</label>
+      <input id="modalFinal" type="number" placeholder="50" />
 
-      <label for="modalDraw" style="margin-top: 14px;">무승부 점수</label>
-      <input id="modalDraw" type="number" placeholder="8" />
+      <label for="modalSecond" style="margin-top: 14px;">2차탈락 점수</label>
+      <input id="modalSecond" type="number" placeholder="30" />
 
-      <label for="modalLose" style="margin-top: 14px;">패배 점수</label>
-      <input id="modalLose" type="number" placeholder="2" />
+      <label for="modalFirst" style="margin-top: 14px;">1차탈락 점수</label>
+      <input id="modalFirst" type="number" placeholder="10" />
+
+      <label for="modalDoc" style="margin-top: 14px;">서류탈락 점수</label>
+      <input id="modalDoc" type="number" placeholder="1" />
 
       <div class="btnRow" style="margin-top: 20px;">
         <button class="mainBtn" id="modalSaveBtn">저장</button>
@@ -1203,16 +1206,18 @@
         const company = companies.find(c => c.id === companyId);
         $("modalTitle").textContent = "기업 수정";
         $("modalCompanyName").value = company.name;
-        $("modalWin").value = company.scores["승"];
-        $("modalDraw").value = company.scores["무"];
-        $("modalLose").value = company.scores["패"];
+        $("modalFinal").value = company.scores["최종합격"];
+        $("modalSecond").value = company.scores["2차탈락"];
+        $("modalFirst").value = company.scores["1차탈락"];
+        $("modalDoc").value = company.scores["서류탈락"];
       } else {
         State.editingCompanyId = null;
         $("modalTitle").textContent = "새 기업 추가";
         $("modalCompanyName").value = "";
-        $("modalWin").value = "";
-        $("modalDraw").value = "";
-        $("modalLose").value = "";
+        $("modalFinal").value = "";
+        $("modalSecond").value = "";
+        $("modalFirst").value = "";
+        $("modalDoc").value = "";
       }
       $("companyModal").classList.add("show");
     }
@@ -1388,9 +1393,10 @@
       $("modalSaveBtn").addEventListener("click", async () => {
         const name = $("modalCompanyName").value.trim();
         const scores = {
-          "승": parseInt($("modalWin").value) || 0,
-          "무": parseInt($("modalDraw").value) || 0,
-          "패": parseInt($("modalLose").value) || 0
+          "최종합격": parseInt($("modalFinal").value) || 0,
+          "2차탈락": parseInt($("modalSecond").value) || 0,
+          "1차탈락": parseInt($("modalFirst").value) || 0,
+          "서류탈락": parseInt($("modalDoc").value) || 0
         };
 
         if (!name) {
