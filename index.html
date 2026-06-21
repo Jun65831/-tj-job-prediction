@@ -1201,6 +1201,11 @@
         companies.map(c => `${c.name}: ${allSelections[c.name]}`).join("\n") +
         `\n\n합격을 기원합니다!!!!!!!!!\n취뽀의 신이 TJ와 함께하길... 🌈💼🔥`;
 
+      // 같은 닉네임의 마지막 예측권이 있으면 먼저 삭제 (중복 방지)
+      if (relevantPrediction) {
+        Storage.deletePrediction(relevantPrediction.id);
+      }
+
       Storage.addPrediction(currentNickname, allSelections, total);
       updateDashboard();
       showToast("예측권 업데이트 완료! 🎫");
