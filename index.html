@@ -613,22 +613,35 @@
       display: grid;
       grid-template-columns: 1fr auto;
       align-items: center;
-      padding: 14px;
-      border: 1px solid rgba(255,255,255,0.13);
-      border-radius: 16px;
-      background: rgba(0,0,0,0.15);
+      gap: 12px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.055));
+      backdrop-filter: blur(12px);
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    }
+
+    .companyItem:hover {
+      background: linear-gradient(135deg, rgba(255,255,255,0.16), rgba(255,255,255,0.08));
+      border-color: rgba(255,255,255,0.25);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.15);
     }
 
     .companyInfo strong {
       display: block;
-      font-size: 16px;
-      margin-bottom: 4px;
+      font-size: 17px;
+      margin-bottom: 6px;
+      color: var(--text);
     }
 
     .companyInfo small {
       color: var(--muted);
-      font-weight: 800;
+      font-weight: 700;
       font-size: 12px;
+      line-height: 1.5;
+      display: block;
     }
 
     .companyActions {
@@ -637,7 +650,7 @@
     }
 
     .iconBtn {
-      background: rgba(255,255,255,0.15);
+      background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.08));
       border: 1px solid rgba(255,255,255,0.25);
       color: #fff;
       padding: 8px 12px;
@@ -1172,10 +1185,15 @@
         <div class="companyItem">
           <div class="companyInfo">
             <strong>${c.name}</strong>
-            <small>승 ${c.scores["승"]}점 · 무 ${c.scores["무"]}점 · 패 ${c.scores["패"]}점</small>
+            <small>
+              최종합격 <span style="color: var(--mint);">${c.scores["최종합격"]}점</span> ·
+              2차탈락 <span style="color: var(--sky);">${c.scores["2차탈락"]}점</span> ·
+              1차탈락 <span style="color: var(--gold);">${c.scores["1차탈락"]}점</span> ·
+              서류탈락 <span style="color: var(--hot);">${c.scores["서류탈락"]}점</span>
+            </small>
           </div>
           <div class="companyActions">
-            <button class="iconBtn" onclick="editCompany('${c.id}')">수정</button>
+            <button class="iconBtn" onclick="editCompany('${c.id}')">✏️</button>
           </div>
         </div>
       `).join("");
