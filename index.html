@@ -991,6 +991,17 @@
 
         // Firebase에 저장
         db.ref('results').set(resultData).catch(err => console.error("Firebase save error:", err));
+      },
+
+      addCompany(name, scores) {
+        const newCompany = {
+          id: Date.now().toString(),
+          name,
+          scores,
+          isDefault: false,
+          createdAt: new Date().toISOString()
+        };
+        this.companies.push(newCompany);
       }
     };
 
