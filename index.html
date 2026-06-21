@@ -928,6 +928,15 @@
           }
         });
 
+        // Firebase에서 추가 기업 데이터 한 번 로드
+        db.ref('companies').once('value', snapshot => {
+          const data = snapshot.val();
+          if (data) {
+            const customCompanies = Object.values(data);
+            this.companies = [...this.companies, ...customCompanies];
+          }
+        });
+
         // Firebase 실시간 리스너
         db.ref('predictions').on('value', snapshot => {
           const data = snapshot.val();
@@ -943,6 +952,17 @@
           if (data) {
             MemoryCache.resultSet = data;
             localStorage.setItem("resultSet", JSON.stringify(data));
+          }
+        });
+
+        db.ref('companies').on('value', snapshot => {
+          const data = snapshot.val();
+          if (data) {
+            const customCompanies = Object.values(data);
+            const baseCompanies = this.companies.filter(c => c.isDefault);
+            this.companies = [...baseCompanies, ...customCompanies];
+            renderCompanyList();
+            renderTicketGames();
           }
         });
       },
@@ -1002,6 +1022,9 @@
           createdAt: new Date().toISOString()
         };
         this.companies.push(newCompany);
+
+        // Firebase에도 저장
+        db.ref('companies').push(newCompany).catch(err => console.error("Firebase save error:", err));
       }
     };
 
