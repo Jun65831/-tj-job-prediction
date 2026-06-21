@@ -1178,9 +1178,11 @@
     function renderTicketPreview() {
       const companies = Storage.getCompanies();
       const predictions = Storage.getPredictions();
+      const currentNickname = $("nickname").value.trim();
       const lastPrediction = predictions.length > 0 ? predictions[predictions.length - 1] : null;
+      const relevantPrediction = (lastPrediction && lastPrediction.nickname === currentNickname) ? lastPrediction : null;
 
-      const allSelections = lastPrediction ? { ...lastPrediction.picks, ...State.ticketSelections } : State.ticketSelections;
+      const allSelections = relevantPrediction ? { ...relevantPrediction.picks, ...State.ticketSelections } : State.ticketSelections;
 
       $("ticketRows").innerHTML = companies.map(c => `
         <div class="ticketRow">
@@ -1194,12 +1196,12 @@
       $("ticketTotalBox").style.display = "block";
 
       State.lastTicketText = `[TJ 취업 승무패]\n` +
-        `참가자: ${$("nickname").value.trim()}\n` +
+        `참가자: ${currentNickname}\n` +
         `점수 합계: ${total}점\n\n` +
         companies.map(c => `${c.name}: ${allSelections[c.name]}`).join("\n") +
         `\n\n합격을 기원합니다!!!!!!!!!\n취뽀의 신이 TJ와 함께하길... 🌈💼🔥`;
 
-      Storage.addPrediction($("nickname").value.trim(), allSelections, total);
+      Storage.addPrediction(currentNickname, allSelections, total);
       updateDashboard();
       showToast("예측권 업데이트 완료! 🎫");
     }
