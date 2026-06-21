@@ -233,7 +233,7 @@
 
     .choices {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 9px;
     }
 
@@ -262,19 +262,25 @@
       border-color: rgba(255,255,255,0.35);
     }
 
-    .choice.win.active {
-      background: linear-gradient(135deg, rgba(255, 209, 102, 0.96), rgba(255, 126, 84, 0.96));
+    .choice.final.active {
+      background: linear-gradient(135deg, rgba(96, 242, 168, 0.96), rgba(88, 226, 134, 0.96));
+      color: #001a08;
+      box-shadow: 0 14px 34px rgba(96, 242, 168, 0.24);
+    }
+
+    .choice.second.active {
+      background: linear-gradient(135deg, rgba(255, 209, 102, 0.96), rgba(255, 180, 50, 0.96));
       color: #1b1100;
       box-shadow: 0 14px 34px rgba(255, 209, 102, 0.24);
     }
 
-    .choice.draw.active {
-      background: linear-gradient(135deg, rgba(89, 209, 255, 0.96), rgba(96, 242, 168, 0.94));
+    .choice.first.active {
+      background: linear-gradient(135deg, rgba(89, 209, 255, 0.96), rgba(59, 192, 255, 0.94));
       color: #001320;
       box-shadow: 0 14px 34px rgba(89, 209, 255, 0.20);
     }
 
-    .choice.lose.active {
+    .choice.doc.active {
       background: linear-gradient(135deg, rgba(255, 107, 107, 0.96), rgba(255, 79, 163, 0.92));
       color: #230006;
       box-shadow: 0 14px 34px rgba(255, 79, 163, 0.20);
@@ -406,9 +412,10 @@
       border: 1px solid rgba(255,255,255,0.17);
     }
 
-    .badgeChoice.승 { background: rgba(255,209,102,0.94); color: #201300; }
-    .badgeChoice.무 { background: rgba(89,209,255,0.94); color: #001620; }
-    .badgeChoice.패 { background: rgba(255,107,107,0.94); color: #260004; }
+    .badgeChoice.최종합격 { background: rgba(96,242,168,0.94); color: #001a08; }
+    .badgeChoice.2차탈락 { background: rgba(255,209,102,0.94); color: #201300; }
+    .badgeChoice.1차탈락 { background: rgba(89,209,255,0.94); color: #001620; }
+    .badgeChoice.서류탈락 { background: rgba(255,107,107,0.94); color: #260004; }
 
     .ticketTotal {
       margin-top: 16px;
@@ -1030,17 +1037,21 @@
               ${isExisting ? `<small style="color: var(--gold);">✓ 이미 선택됨</small>` : ''}
             </div>
             <div class="choices">
-              <button class="choice win" data-company="${c.name}" data-choice="승" ${isDisabled ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''}>
-                승
-                <small>+${c.scores["승"]}점</small>
+              <button class="choice final" data-company="${c.name}" data-choice="최종합격" ${isDisabled ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''}>
+                최종합격
+                <small>+${c.scores["최종합격"] || 0}점</small>
               </button>
-              <button class="choice draw" data-company="${c.name}" data-choice="무" ${isDisabled ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''}>
-                무
-                <small>+${c.scores["무"]}점</small>
+              <button class="choice second" data-company="${c.name}" data-choice="2차탈락" ${isDisabled ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''}>
+                2차탈락
+                <small>+${c.scores["2차탈락"] || 0}점</small>
               </button>
-              <button class="choice lose" data-company="${c.name}" data-choice="패" ${isDisabled ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''}>
-                패
-                <small>+${c.scores["패"]}점</small>
+              <button class="choice first" data-company="${c.name}" data-choice="1차탈락" ${isDisabled ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''}>
+                1차탈락
+                <small>+${c.scores["1차탈락"] || 0}점</small>
+              </button>
+              <button class="choice doc" data-company="${c.name}" data-choice="서류탈락" ${isDisabled ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''}>
+                서류탈락
+                <small>+${c.scores["서류탈락"] || 0}점</small>
               </button>
             </div>
           </div>
@@ -1214,9 +1225,10 @@
           <b>${c.name}</b>
           <select data-company="${c.name}">
             <option value="">선택...</option>
-            <option value="승" ${results[c.name] === "승" ? "selected" : ""}>승</option>
-            <option value="무" ${results[c.name] === "무" ? "selected" : ""}>무</option>
-            <option value="패" ${results[c.name] === "패" ? "selected" : ""}>패</option>
+            <option value="최종합격" ${results[c.name] === "최종합격" ? "selected" : ""}>최종합격</option>
+            <option value="2차탈락" ${results[c.name] === "2차탈락" ? "selected" : ""}>2차탈락</option>
+            <option value="1차탈락" ${results[c.name] === "1차탈락" ? "selected" : ""}>1차탈락</option>
+            <option value="서류탈락" ${results[c.name] === "서류탈락" ? "selected" : ""}>서류탈락</option>
           </select>
         </div>
       `).join("");
