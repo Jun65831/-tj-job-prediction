@@ -682,6 +682,8 @@
       .dashboardTable th, .dashboardTable td { padding: 8px; }
     }
   </style>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js"></script>
 </head>
 <body>
   <div class="wrap">
@@ -854,8 +856,20 @@
   <div class="toast" id="toast">복사 완료! 📩</div>
 
   <script>
-    // Firebase 설정 (준비 중)
-    // const firebaseConfig = { ... };
+    // Firebase 설정
+    const firebaseConfig = {
+      apiKey: "AIzaSyA_feId9nCgKcfvNspTAOmMNisXwu8joTY",
+      authDomain: "tj-job-prediction.firebaseapp.com",
+      databaseURL: "https://tj-job-prediction-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "tj-job-prediction",
+      storageBucket: "tj-job-prediction.firebasestorage.app",
+      messagingSenderId: "59294386490",
+      appId: "1:59294386490:web:689c030da807ba14f6a803",
+      measurementId: "G-7T4BFRFRFX"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
     const Storage = {
       companies: [
@@ -889,16 +903,22 @@
       },
 
       addPrediction(nickname, picks, totalScore) {
-        const predictions = this.getPredictions();
-        predictions.push({
+        const prediction = {
           id: Date.now().toString(),
           nickname,
           picks,
           totalScore,
           createdAt: new Date().toISOString(),
           companySnapshot: Object.keys(picks)
-        });
+        };
+
+        // localStorage에 저장
+        const predictions = this.getPredictions();
+        predictions.push(prediction);
         localStorage.setItem("predictions", JSON.stringify(predictions));
+
+        // Firebase에 저장
+        db.ref('predictions').push(prediction).catch(err => console.error("Firebase save error:", err));
       },
 
       deletePrediction(id) {
@@ -907,7 +927,13 @@
       },
 
       saveResultSet(results) {
-        localStorage.setItem("resultSet", JSON.stringify({ ...results, savedAt: new Date().toISOString() }));
+        const resultData = { ...results, savedAt: new Date().toISOString() };
+
+        // localStorage에 저장
+        localStorage.setItem("resultSet", JSON.stringify(resultData));
+
+        // Firebase에 저장
+        db.ref('results').set(resultData).catch(err => console.error("Firebase save error:", err));
       }
     };
 
