@@ -683,51 +683,53 @@
 
     <div class="tabs">
       <button class="tab active" data-tab="ticketPanel" title="발권기">🎫 발권기</button>
+      <button class="tab" data-tab="recordPanel" title="발권 기록">📋 기록</button>
       <button class="tab" data-tab="companyPanel" title="기업 관리">⚙️ 기업</button>
-      <button class="tab" data-tab="dashboardPanel" title="대시보드">📊 대시보드</button>
+      <button class="tab" data-tab="resultPanel" title="결과 입력">📝 결과</button>
+      <button class="tab" data-tab="rankPanel" title="순위표">🏆 순위</button>
     </div>
 
     <!-- 발권기 탭 -->
     <section class="section panel active" id="ticketPanel">
-      <div class="twoCol">
-        <div>
-          <h2 class="miniTitle">🎫 발권기</h2>
-          <p class="desc">닉네임과 승무패를 고르면 예측권이 발권됩니다.</p>
+      <h2 class="miniTitle">🎫 발권기</h2>
+      <p class="desc">닉네임과 선택지를 고르고 발권하면 발권 기록에 저장됩니다.</p>
 
-          <label for="nickname">참가자 닉네임</label>
-          <input id="nickname" placeholder="예: 돔베, 스보박박" />
+      <div style="max-width: 600px; margin: 0 auto;">
+        <label for="nickname">참가자 닉네임</label>
+        <input id="nickname" placeholder="예: 돔베, 스보박박" />
 
-          <div class="companyGrid" id="ticketGames" style="margin-top:16px;"></div>
+        <div class="companyGrid" id="ticketGames" style="margin-top:16px;"></div>
 
-          <div class="btnRow">
-            <button class="mainBtn" id="makeTicketBtn" disabled>예측권 발권하기 🚀</button>
-            <button class="subBtn" id="resetTicketBtn">초기화</button>
-          </div>
+        <div class="btnRow" style="margin-top: 16px;">
+          <button class="mainBtn" id="makeTicketBtn" disabled style="flex: 1;">발권하기 🚀</button>
+          <button class="subBtn" id="resetTicketBtn">초기화</button>
         </div>
+      </div>
+    </section>
 
-        <div>
-          <h2 class="miniTitle">📩 발권 결과</h2>
-          <div class="ticket" id="ticketPreview">
-            <div class="ticketHead">
-              <div class="mark">🎉🙏✨</div>
-              <h2>TJ 취업 승무패 예측권</h2>
-              <p>합격을 기원합니다!!!!!!!!!</p>
-            </div>
-            <div class="ticketRows" id="ticketRows">
-              <div style="color:var(--muted); font-weight:900; text-align:center; padding:40px 0;">
-                왼쪽에서 선택하면 여기에 예측권이 발권됩니다.
-              </div>
-            </div>
-            <div class="ticketTotal" id="ticketTotalBox" style="display:none;">
-              <div class="label">선택 기준 점수 합계</div>
-              <div class="total"><span id="ticketTotal">0</span>점</div>
-            </div>
-          </div>
+    <!-- 발권 기록 탭 -->
+    <section class="section panel" id="recordPanel">
+      <h2 class="miniTitle">📋 발권 기록</h2>
+      <p class="desc"><span id="totalRecordCount">0</span>개의 발권 기록</p>
 
-          <div class="btnRow">
-            <button class="mainBtn" id="copyTicketBtn">예측권 복사하기</button>
-          </div>
-        </div>
+      <div id="recordContent" style="overflow-x: auto;">
+        <table class="dashboardTable">
+          <thead>
+            <tr>
+              <th>닉네임</th>
+              <th>발권일</th>
+              <th>점수</th>
+              <th>예측</th>
+              <th>작업</th>
+            </tr>
+          </thead>
+          <tbody id="recordTableBody">
+          </tbody>
+        </table>
+      </div>
+
+      <div id="emptyRecord" class="emptyState" style="display:none;">
+        아직 발권 기록이 없습니다.
       </div>
     </section>
 
@@ -743,43 +745,38 @@
       <div id="companyList" class="companyGrid"></div>
     </section>
 
-    <!-- 대시보드 탭 -->
-    <section class="section panel" id="dashboardPanel">
-      <div style="display: grid; grid-template-columns: 1fr 1.3fr; gap: 20px; align-items: start;">
-        <!-- 왼쪽: 결과 입력 -->
-        <div>
-          <h2 class="miniTitle">📝 실제 결과</h2>
-          <p class="desc" style="font-size: 12px;">각 기업의 결과를 입력하면 순위가 자동 계산됩니다.</p>
+    <!-- 결과 입력 탭 -->
+    <section class="section panel" id="resultPanel">
+      <h2 class="miniTitle">📝 실제 결과 입력</h2>
+      <p class="desc">각 기업의 최종 결과를 입력하고 저장하세요.</p>
 
-          <div class="officialGrid" id="resultGrid" style="gap: 6px;"></div>
+      <div class="officialGrid" id="resultGrid" style="gap: 6px;"></div>
 
-          <div class="btnRow" style="margin-top: 12px;">
-            <button class="mainBtn" id="saveResultBtn" style="flex: 1; font-size: 14px;">저장</button>
-            <button class="subBtn" id="clearResultBtn" style="flex: 1; font-size: 14px;">초기화</button>
-          </div>
+      <div class="btnRow" style="margin-top: 16px;">
+        <button class="mainBtn" id="saveResultBtn" style="flex: 1;">저장</button>
+        <button class="subBtn" id="clearResultBtn">초기화</button>
+      </div>
 
-          <div id="resultStatus" style="margin-top: 12px; text-align: center; color: var(--muted); font-weight: 900; font-size: 12px; display: none;">
-            저장됨 ✓
-          </div>
-        </div>
+      <div id="resultStatus" style="margin-top: 16px; text-align: center; color: var(--muted); font-weight: 900; display: none;">
+        저장됨 ✓
+      </div>
+    </section>
 
-        <!-- 오른쪽: 예측 목록 & 순위 -->
-        <div>
-          <h2 class="miniTitle">🏆 예측 & 순위 (<span id="predictionCount">0</span>명)</h2>
-          <p class="desc" style="font-size: 12px;">결과 입력 후 자동으로 순위가 계산됩니다.</p>
+    <!-- 순위표 탭 -->
+    <section class="section panel" id="rankPanel">
+      <h2 class="miniTitle">🏆 순위표</h2>
+      <p class="desc">결과 기반 자동 계산 순위 (<span id="predictionCount">0</span>명)</p>
 
-          <div id="dashboardContent" style="max-height: 600px; overflow-y: auto;">
-            <div id="rankCardContainer">
-              <div id="emptyDashboard" class="emptyState" style="padding: 40px 0;">
-                아직 예측권이 없습니다.
-              </div>
-            </div>
-          </div>
-
-          <div style="display: none;" id="copyRankBtnContainer" class="btnRow" style="margin-top: 12px;">
-            <button class="mainBtn" id="copyRankBtn" style="width: 100%;">순위표 복사</button>
+      <div id="rankContent">
+        <div id="rankCardContainer">
+          <div id="emptyRank" class="emptyState" style="padding: 60px 20px;">
+            결과를 저장하면 순위가 자동으로 계산됩니다.
           </div>
         </div>
+      </div>
+
+      <div id="copyRankBtnContainer" class="btnRow" style="margin-top: 16px; display: none;">
+        <button class="mainBtn" id="copyRankBtn" style="width: 100%;">순위표 복사</button>
       </div>
     </section>
   </div>
@@ -1011,33 +1008,12 @@
       $("makeTicketBtn").disabled = !ready;
     }
 
-    function makeTicketText() {
-      const companies = Storage.getCompanies();
-      const rows = companies.map(c => `${c.name}: ${State.ticketSelections[c.name]}`).join("\n");
-      return `[TJ 취업 승무패]\n` +
-        `참가자: ${$("nickname").value.trim()}\n` +
-        `결과예정일: 7월 언젠가\n` +
-        `점수 합계: ${ticketTotal()}점\n\n` +
-        `${rows}\n\n` +
-        `합격을 기원합니다!!!!!!!!!\n` +
-        `취뽀의 신이 TJ와 함께하길... 🌈💼🔥`;
-    }
-
-    function renderTicketPreview() {
-      const companies = Storage.getCompanies();
-      $("ticketRows").innerHTML = companies.map(c => `
-        <div class="ticketRow">
-          <strong>${c.name}</strong>
-          <span class="badgeChoice ${State.ticketSelections[c.name]}">${State.ticketSelections[c.name]}</span>
-        </div>
-      `).join("");
-
-      $("ticketTotal").textContent = ticketTotal();
-      $("ticketTotalBox").style.display = "block";
-      State.lastTicketText = makeTicketText();
-      Storage.addPrediction($("nickname").value.trim(), { ...State.ticketSelections }, ticketTotal());
-      updateDashboard();
-      showToast("예측권 발권 완료! 🎫");
+    function issueTicket() {
+      const nickname = $("nickname").value.trim();
+      Storage.addPrediction(nickname, { ...State.ticketSelections }, ticketTotal());
+      resetTicket();
+      updateRecordPanel();
+      showToast("발권 완료! 🎫");
     }
 
     function resetTicket() {
@@ -1097,12 +1073,50 @@
         renderCompanyList();
         renderTicketGames();
         renderResultGrid();
+        updateRankPanel();
         showToast("기업이 삭제되었습니다.");
       }
     };
 
-    // ==================== SECTION 7: 대시보드 탭 ====================
-    function updateDashboard() {
+    // ==================== SECTION 7: 발권 기록 탭 ====================
+    function updateRecordPanel() {
+      const predictions = Storage.getPredictions();
+      $("totalRecordCount").textContent = predictions.length;
+
+      if (predictions.length === 0) {
+        $("recordTableBody").innerHTML = "";
+        $("emptyRecord").style.display = "block";
+        return;
+      }
+
+      $("emptyRecord").style.display = "none";
+      $("recordTableBody").innerHTML = predictions.map(p => `
+        <tr>
+          <td><strong>${p.nickname}</strong></td>
+          <td>${formatDate(p.createdAt)}</td>
+          <td>${p.totalScore}점</td>
+          <td style="font-size: 12px;">
+            ${Object.entries(p.picks).slice(0, 3).map(([k, v]) => `<span class="badgeChoice ${v}" style="padding: 4px 8px; font-size: 11px; margin-right: 4px;">${v}</span>`).join("")}
+            ${Object.keys(p.picks).length > 3 ? '...' : ''}
+          </td>
+          <td>
+            <button class="iconBtn delBtn" onclick="deleteRecordUI('${p.id}')" style="font-size: 11px;">삭제</button>
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    window.deleteRecordUI = (id) => {
+      if (confirm("발권 기록을 삭제하시겠습니까?")) {
+        Storage.deletePrediction(id);
+        updateRecordPanel();
+        updateRankPanel();
+        showToast("발권 기록이 삭제되었습니다.");
+      }
+    };
+
+    // ==================== SECTION 8: 순위표 탭 ====================
+    function updateRankPanel() {
       const predictions = Storage.getPredictions();
       const resultSet = Storage.getResultSet();
       const companies = Storage.getCompanies();
@@ -1115,24 +1129,9 @@
         return;
       }
 
-      // 결과가 없으면 예측 목록만 표시
+      // 결과가 없으면 메시지만 표시
       if (!resultSet.savedAt || Object.keys(resultSet).length === 0) {
-        $("rankCardContainer").innerHTML = `
-          <div style="font-size: 13px; color: var(--muted); font-weight: 900;">
-            <div style="padding: 20px; background: rgba(89,209,255,0.15); border-radius: 16px; border: 1px solid rgba(89,209,255,0.3); margin-bottom: 12px;">
-              💡 왼쪽에서 결과를 입력하면 순위가 자동으로 계산됩니다.
-            </div>
-            ${predictions.map((p, idx) => `
-              <div style="padding: 12px; background: rgba(255,255,255,0.05); border-radius: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                  <div style="color: #fff; font-weight: 1000; margin-bottom: 2px;">${idx + 1}. ${p.nickname}</div>
-                  <div style="font-size: 12px;">${formatDate(p.createdAt)}</div>
-                </div>
-                <button class="iconBtn delBtn" onclick="deletePredictionUI('${p.id}')" style="margin-left: 8px;">삭제</button>
-              </div>
-            `).join("")}
-          </div>
-        `;
+        $("rankCardContainer").innerHTML = '<div class="emptyState" style="padding: 40px 0;">📝 결과를 입력하면 순위가 자동으로 계산됩니다.</div>';
         $("copyRankBtnContainer").style.display = "none";
         return;
       }
@@ -1164,10 +1163,7 @@
                 <div class="rankName" style="font-size: 15px;">${idx === 0 ? "👑 " : ""}${p.nickname}</div>
                 <div class="rankDetail" style="font-size: 11px;">${p.correct}/${companies.length} 적중</div>
               </div>
-              <div style="text-align: right;">
-                <div class="rankScore" style="font-size: 18px;">${p.score}점</div>
-                <button class="iconBtn delBtn" onclick="deletePredictionUI('${p.id}')" style="font-size: 11px; padding: 4px 8px; margin-top: 4px;">삭제</button>
-              </div>
+              <div class="rankScore" style="font-size: 18px;">${p.score}점</div>
             </div>
           `).join("")}
         </div>
@@ -1176,14 +1172,6 @@
       // 순위표 복사 버튼 표시
       $("copyRankBtnContainer").style.display = "flex";
     }
-
-    window.deletePredictionUI = (id) => {
-      if (confirm("예측권을 삭제하시겠습니까?")) {
-        Storage.deletePrediction(id);
-        updateDashboard();
-        showToast("예측권이 삭제되었습니다.");
-      }
-    };
 
     // ==================== SECTION 8: 결과 입력 탭 ====================
     function renderResultGrid() {
@@ -1222,7 +1210,7 @@
 
       Storage.saveResultSet(results);
       $("resultStatus").style.display = "block";
-      updateDashboard(); // 자동으로 순위 계산 & 표시
+      updateRankPanel(); // 자동으로 순위 계산 & 표시
       showToast("결과가 저장되었습니다! 📝");
     }
 
@@ -1231,7 +1219,7 @@
         Storage.saveResultSet({});
         renderResultGrid();
         $("resultStatus").style.display = "none";
-        updateDashboard(); // 순위 계산 해제
+        updateRankPanel(); // 순위 계산 해제
         showToast("결과가 초기화되었습니다.");
       }
     }
@@ -1243,19 +1231,13 @@
       renderTicketGames();
       renderCompanyList();
       renderResultGrid();
-      updateDashboard();
+      updateRecordPanel();
+      updateRankPanel();
 
       // 발권기
       $("nickname").addEventListener("input", updateTicketReady);
-      $("makeTicketBtn").addEventListener("click", renderTicketPreview);
+      $("makeTicketBtn").addEventListener("click", issueTicket);
       $("resetTicketBtn").addEventListener("click", resetTicket);
-      $("copyTicketBtn").addEventListener("click", () => {
-        if (!State.lastTicketText) {
-          alert("먼저 예측권을 발권해주세요.");
-          return;
-        }
-        copyText(State.lastTicketText, "예측권 복사 완료! 📩");
-      });
 
       // 기업 관리
       $("addCompanyBtn").addEventListener("click", () => showCompanyModal(null));
@@ -1283,6 +1265,7 @@
         renderCompanyList();
         renderTicketGames();
         renderResultGrid();
+        updateRankPanel();
         showToast("저장되었습니다! ✓");
       });
       $("modalCancelBtn").addEventListener("click", () => $("companyModal").classList.remove("show"));
