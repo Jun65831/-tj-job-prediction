@@ -1146,7 +1146,21 @@
 
     function updateTicketReady() {
       const companies = Storage.getCompanies();
-      const ready = $("nickname").value.trim() && companies.every(c => State.ticketSelections[c.name]);
+      const currentNickname = $("nickname").value.trim();
+      const predictions = Storage.getPredictions();
+      const lastPrediction = predictions.length > 0 ? predictions[predictions.length - 1] : null;
+      const relevantPrediction = (lastPrediction && lastPrediction.nickname === currentNickname) ? lastPrediction : null;
+
+      let ready = currentNickname && Object.keys(State.ticketSelections).length > 0;
+
+      if (relevantPrediction) {
+        // 이미 발권한 경우: 새로운 기업만 1개 이상 선택되면 됨
+        ready = currentNickname && Object.keys(State.ticketSelections).some(c => !relevantPrediction.picks[c]);
+      } else {
+        // 새로운 발권의 경우: 모든 기업을 선택해야 함
+        ready = currentNickname && companies.every(c => State.ticketSelections[c.name]);
+      }
+
       $("makeTicketBtn").disabled = !ready;
     }
 
