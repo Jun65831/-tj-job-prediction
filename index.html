@@ -1082,12 +1082,14 @@
     function renderTicketGames() {
       const companies = Storage.getCompanies();
       const predictions = Storage.getPredictions();
+      const currentNickname = $("nickname").value.trim();
       const lastPrediction = predictions.length > 0 ? predictions[predictions.length - 1] : null;
 
-      const newCompanies = companies.filter(c => !lastPrediction || !lastPrediction.picks[c.name]);
+      // 현재 닉네임과 마지막 예측권의 닉네임이 같을 때만 그 예측권을 참고
+      const relevantPrediction = (lastPrediction && lastPrediction.nickname === currentNickname) ? lastPrediction : null;
 
       $("ticketGames").innerHTML = companies.map((c, idx) => {
-        const isExisting = lastPrediction && lastPrediction.picks[c.name];
+        const isExisting = relevantPrediction && relevantPrediction.picks[c.name];
         const isDisabled = isExisting;
 
         return `
