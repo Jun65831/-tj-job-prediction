@@ -1204,8 +1204,15 @@
 
     window.editCompany = (id) => showCompanyModal(id);
 
+    function togglePredictionDetail(id) {
+      const detail = $(`detail-${id}`);
+      if (!detail) return;
+      detail.style.display = detail.style.display === "none" ? "table-row" : "none";
+    }
+
     function updateDashboard() {
       const predictions = Storage.getPredictions();
+      const companies = Storage.getCompanies();
       $("predictionCount").textContent = predictions.length;
 
       if (predictions.length === 0) {
@@ -1215,15 +1222,28 @@
       }
 
       $("emptyDashboard").style.display = "none";
-      $("dashboardTableBody").innerHTML = predictions.map(p => `
-        <tr>
-          <td><strong>${p.nickname}</strong></td>
-          <td>${formatDate(p.createdAt)}</td>
-          <td>${p.totalScore}점</td>
-          <td>${Object.keys(p.picks).length}</td>
-          <td></td>
-        </tr>
-      `).join("");
+      $("dashboardTableBody").innerHTML = predictions.map(p => {
+        const detailList = companies.map(c => {
+          const pick = p.picks[c.name];
+          const score = pick ? c.scores[pick] : 0;
+          return `<small><strong>${c.name}</strong>: ${pick || "선택 안 함"} ${pick ? `(${score}점)` : ""}</small>`;
+        }).join("<br>");
+
+        return `
+          <tr onclick="togglePredictionDetail('${p.id}')" style="cursor: pointer;">
+            <td><strong>${p.nickname}</strong> <small style="color: #999;">▼</small></td>
+            <td>${formatDate(p.createdAt)}</td>
+            <td>${p.totalScore}점</td>
+            <td>${Object.keys(p.picks).length}</td>
+            <td></td>
+          </tr>
+          <tr id="detail-${p.id}" style="display: none;">
+            <td colspan="5" style="padding: 12px 16px; background: rgba(255,255,255,0.03); border-left: 3px solid #60f2a8;">
+              ${detailList}
+            </td>
+          </tr>
+        `;
+      }).join("");
     }
 
     function renderResultGrid() {
