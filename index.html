@@ -871,6 +871,11 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
+    const MemoryCache = {
+      predictions: [],
+      resultSet: {}
+    };
+
     const Storage = {
       companies: [
         { id: "1", name: "현대자동차", scores: { "최종합격": 50, "2차탈락": 30, "1차탈락": 10, "서류탈락": 1 }, isDefault: true, createdAt: new Date().toISOString() },
@@ -882,12 +887,48 @@
       ],
 
       init() {
-        if (!localStorage.getItem("predictions")) {
-          localStorage.setItem("predictions", JSON.stringify([]));
-        }
-        if (!localStorage.getItem("resultSet")) {
-          localStorage.setItem("resultSet", JSON.stringify({}));
-        }
+        // Firebase에서 예측 데이터 한 번 로드
+        db.ref('predictions').once('value', snapshot => {
+          const data = snapshot.val();
+          if (data) {
+            MemoryCache.predictions = Object.values(data);
+            localStorage.setItem("predictions", JSON.stringify(MemoryCache.predictions));
+          } else {
+            MemoryCache.predictions = [];
+            localStorage.setItem("predictions", JSON.stringify([]));
+          }
+          updateDashboard();
+        });
+
+        // Firebase에서 결과 데이터 한 번 로드
+        db.ref('results').once('value', snapshot => {
+          const data = snapshot.val();
+          if (data) {
+            MemoryCache.resultSet = data;
+            localStorage.setItem("resultSet", JSON.stringify(data));
+          } else {
+            MemoryCache.resultSet = {};
+            localStorage.setItem("resultSet", JSON.stringify({}));
+          }
+        });
+
+        // Firebase 실시간 리스너
+        db.ref('predictions').on('value', snapshot => {
+          const data = snapshot.val();
+          if (data) {
+            MemoryCache.predictions = Object.values(data);
+            localStorage.setItem("predictions", JSON.stringify(MemoryCache.predictions));
+            updateDashboard();
+          }
+        });
+
+        db.ref('results').on('value', snapshot => {
+          const data = snapshot.val();
+          if (data) {
+            MemoryCache.resultSet = data;
+            localStorage.setItem("resultSet", JSON.stringify(data));
+          }
+        });
       },
 
       getCompanies() {
@@ -895,11 +936,11 @@
       },
 
       getPredictions() {
-        return JSON.parse(localStorage.getItem("predictions") || "[]");
+        return MemoryCache.predictions;
       },
 
       getResultSet() {
-        return JSON.parse(localStorage.getItem("resultSet") || "{}");
+        return MemoryCache.resultSet;
       },
 
       addPrediction(nickname, picks, totalScore) {
