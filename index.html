@@ -233,7 +233,7 @@
 
     .choices {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 9px;
     }
 
@@ -406,10 +406,9 @@
       border: 1px solid rgba(255,255,255,0.17);
     }
 
-    .badgeChoice.최종합격 { background: rgba(96,242,168,0.94); color: #001a0f; }
-    .badgeChoice.2차탈락 { background: rgba(255,209,102,0.94); color: #201300; }
-    .badgeChoice.1차탈락 { background: rgba(255,145,77,0.94); color: #260a00; }
-    .badgeChoice.서류탈락 { background: rgba(255,107,107,0.94); color: #260004; }
+    .badgeChoice.승 { background: rgba(255,209,102,0.94); color: #201300; }
+    .badgeChoice.무 { background: rgba(89,209,255,0.94); color: #001620; }
+    .badgeChoice.패 { background: rgba(255,107,107,0.94); color: #260004; }
 
     .ticketTotal {
       margin-top: 16px;
@@ -657,7 +656,7 @@
       .section { border-radius: 20px; padding: 13px; margin-top: 12px; }
       .twoCol { grid-template-columns: 1fr; }
       .game { grid-template-columns: 1fr; padding: 13px; border-radius: 18px; }
-      .choices { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+      .choices { grid-template-columns: repeat(3, 1fr); gap: 6px; }
       .choice { border-radius: 14px; padding: 12px 5px; font-size: 16px; }
       .choice small { font-size: 11px; }
       .officialGrid { grid-template-columns: 1fr; }
@@ -683,53 +682,54 @@
 
     <div class="tabs">
       <button class="tab active" data-tab="ticketPanel" title="발권기">🎫 발권기</button>
-      <button class="tab" data-tab="recordPanel" title="발권 기록">📋 기록</button>
       <button class="tab" data-tab="companyPanel" title="기업 관리">⚙️ 기업</button>
+      <button class="tab" data-tab="dashboardPanel" title="대시보드">📊 대시보드</button>
       <button class="tab" data-tab="resultPanel" title="결과 입력">📝 결과</button>
-      <button class="tab" data-tab="rankPanel" title="순위표">🏆 순위</button>
+      <button class="tab" data-tab="calcPanel" title="순위 계산">🏆 순위</button>
     </div>
 
     <!-- 발권기 탭 -->
     <section class="section panel active" id="ticketPanel">
-      <h2 class="miniTitle">🎫 발권기</h2>
-      <p class="desc">닉네임과 선택지를 고르고 발권하면 발권 기록에 저장됩니다.</p>
+      <div class="twoCol">
+        <div>
+          <h2 class="miniTitle">🎫 발권기</h2>
+          <p class="desc">닉네임과 승무패를 고르면 예측권이 발권됩니다.</p>
 
-      <div style="max-width: 600px; margin: 0 auto;">
-        <label for="nickname">참가자 닉네임</label>
-        <input id="nickname" placeholder="예: 돔베, 스보박박" />
+          <label for="nickname">참가자 닉네임</label>
+          <input id="nickname" placeholder="예: 돔베, 스보박박" />
 
-        <div class="companyGrid" id="ticketGames" style="margin-top:16px;"></div>
+          <div class="companyGrid" id="ticketGames" style="margin-top:16px;"></div>
 
-        <div class="btnRow" style="margin-top: 16px;">
-          <button class="mainBtn" id="makeTicketBtn" disabled style="flex: 1;">발권하기 🚀</button>
-          <button class="subBtn" id="resetTicketBtn">초기화</button>
+          <div class="btnRow">
+            <button class="mainBtn" id="makeTicketBtn" disabled>예측권 발권하기 🚀</button>
+            <button class="subBtn" id="resetTicketBtn">초기화</button>
+            <button class="subBtn" id="clearPreviousBtn" style="display:none;">이전 선택 제거</button>
+          </div>
         </div>
-      </div>
-    </section>
 
-    <!-- 발권 기록 탭 -->
-    <section class="section panel" id="recordPanel">
-      <h2 class="miniTitle">📋 발권 기록</h2>
-      <p class="desc"><span id="totalRecordCount">0</span>개의 발권 기록</p>
+        <div>
+          <h2 class="miniTitle">📩 발권 결과</h2>
+          <div class="ticket" id="ticketPreview">
+            <div class="ticketHead">
+              <div class="mark">🎉🙏✨</div>
+              <h2>TJ 취업 승무패 예측권</h2>
+              <p>합격을 기원합니다!!!!!!!!!</p>
+            </div>
+            <div class="ticketRows" id="ticketRows">
+              <div style="color:var(--muted); font-weight:900; text-align:center; padding:40px 0;">
+                왼쪽에서 선택하면 여기에 예측권이 발권됩니다.
+              </div>
+            </div>
+            <div class="ticketTotal" id="ticketTotalBox" style="display:none;">
+              <div class="label">선택 기준 점수 합계</div>
+              <div class="total"><span id="ticketTotal">0</span>점</div>
+            </div>
+          </div>
 
-      <div id="recordContent" style="overflow-x: auto;">
-        <table class="dashboardTable">
-          <thead>
-            <tr>
-              <th>닉네임</th>
-              <th>발권일</th>
-              <th>점수</th>
-              <th>예측</th>
-              <th>작업</th>
-            </tr>
-          </thead>
-          <tbody id="recordTableBody">
-          </tbody>
-        </table>
-      </div>
-
-      <div id="emptyRecord" class="emptyState" style="display:none;">
-        아직 발권 기록이 없습니다.
+          <div class="btnRow">
+            <button class="mainBtn" id="copyTicketBtn">예측권 복사하기</button>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -745,38 +745,74 @@
       <div id="companyList" class="companyGrid"></div>
     </section>
 
+    <!-- 대시보드 탭 -->
+    <section class="section panel" id="dashboardPanel">
+      <h2 class="miniTitle">📊 대시보드</h2>
+      <p class="desc"><span id="predictionCount">0</span>개의 예측권이 저장되었습니다.</p>
+
+      <div id="dashboardContent" style="overflow-x: auto;">
+        <table class="dashboardTable">
+          <thead>
+            <tr>
+              <th>닉네임</th>
+              <th>발권일</th>
+              <th>총점</th>
+              <th>기업 수</th>
+              <th>작업</th>
+            </tr>
+          </thead>
+          <tbody id="dashboardTableBody">
+          </tbody>
+        </table>
+      </div>
+
+      <div id="emptyDashboard" class="emptyState" style="display:none;">
+        아직 저장된 예측권이 없습니다. 발권기에서 예측권을 발권하세요!
+      </div>
+    </section>
+
     <!-- 결과 입력 탭 -->
     <section class="section panel" id="resultPanel">
       <h2 class="miniTitle">📝 실제 결과 입력</h2>
-      <p class="desc">각 기업의 최종 결과를 입력하고 저장하세요.</p>
+      <p class="desc">각 기업의 합격/불합격/보류 결과를 입력하고 저장하세요. 순위 계산 때 사용됩니다.</p>
 
-      <div class="officialGrid" id="resultGrid" style="gap: 6px;"></div>
+      <div class="officialBox">
+        <h3 class="miniTitle" style="font-size:19px;">선택하기</h3>
+        <div class="officialGrid" id="resultGrid"></div>
+      </div>
 
-      <div class="btnRow" style="margin-top: 16px;">
-        <button class="mainBtn" id="saveResultBtn" style="flex: 1;">저장</button>
+      <div class="btnRow">
+        <button class="mainBtn" id="saveResultBtn">결과 저장</button>
         <button class="subBtn" id="clearResultBtn">초기화</button>
       </div>
 
       <div id="resultStatus" style="margin-top: 16px; text-align: center; color: var(--muted); font-weight: 900; display: none;">
-        저장됨 ✓
+        마지막 저장: <span id="lastResultTime">-</span>
       </div>
     </section>
 
-    <!-- 순위표 탭 -->
-    <section class="section panel" id="rankPanel">
-      <h2 class="miniTitle">🏆 순위표</h2>
-      <p class="desc">결과 기반 자동 계산 순위 (<span id="predictionCount">0</span>명)</p>
+    <!-- 순위 계산 탭 -->
+    <section class="section panel" id="calcPanel">
+      <h2 class="miniTitle">🏆 순위 계산</h2>
+      <p class="desc">저장된 결과와 예측권을 비교해서 순위를 자동 계산합니다.</p>
 
-      <div id="rankContent">
-        <div id="rankCardContainer">
-          <div id="emptyRank" class="emptyState" style="padding: 60px 20px;">
-            결과를 저장하면 순위가 자동으로 계산됩니다.
-          </div>
+      <div class="btnRow" style="margin-bottom: 16px;">
+        <button class="mainBtn" id="calcBtn">순위 계산하기 🏆</button>
+      </div>
+
+      <div class="results" id="results">
+        <div class="ticketTotal">
+          <div class="label">총 참가자</div>
+          <div class="total"><span id="participantCount">0</span>명</div>
+        </div>
+        <div class="rankCard" id="rankCard"></div>
+        <div class="btnRow">
+          <button class="mainBtn" id="copyRankBtn">순위표 복사하기</button>
         </div>
       </div>
 
-      <div id="copyRankBtnContainer" class="btnRow" style="margin-top: 16px; display: none;">
-        <button class="mainBtn" id="copyRankBtn" style="width: 100%;">순위표 복사</button>
+      <div id="emptyResult" class="emptyState">
+        결과를 저장하고 예측권이 있으면 순위를 계산합니다.
       </div>
     </section>
   </div>
@@ -788,17 +824,14 @@
       <label for="modalCompanyName">기업명</label>
       <input id="modalCompanyName" placeholder="예: 삼성전자" />
 
-      <label for="modalFinal" style="margin-top: 14px;">최종합격 배당</label>
-      <input id="modalFinal" type="number" placeholder="50" />
+      <label for="modalWin" style="margin-top: 14px;">승리 점수</label>
+      <input id="modalWin" type="number" placeholder="50" />
 
-      <label for="modalSecond" style="margin-top: 14px;">2차탈락 배당</label>
-      <input id="modalSecond" type="number" placeholder="12" />
+      <label for="modalDraw" style="margin-top: 14px;">무승부 점수</label>
+      <input id="modalDraw" type="number" placeholder="8" />
 
-      <label for="modalFirst" style="margin-top: 14px;">1차탈락 배당</label>
-      <input id="modalFirst" type="number" placeholder="5" />
-
-      <label for="modalDocument" style="margin-top: 14px;">서류탈락 배당</label>
-      <input id="modalDocument" type="number" placeholder="1" />
+      <label for="modalLose" style="margin-top: 14px;">패배 점수</label>
+      <input id="modalLose" type="number" placeholder="2" />
 
       <div class="btnRow" style="margin-top: 20px;">
         <button class="mainBtn" id="modalSaveBtn">저장</button>
@@ -810,97 +843,124 @@
   <div class="toast" id="toast">복사 완료! 📩</div>
 
   <script>
-    // ==================== SECTION 1: STORAGE & DATA ====================
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbzpQ19IdA31QifbxOMOdV5kNK2eb3LWDK4TAYsOnhNTEUmbm0nE7tCNXSffpO-KLN0JqA/exec";
+
     const Storage = {
-      defaults: {
-        companies: [
-          { id: "1", name: "현대자동차", scores: { "최종합격": 50, "2차탈락": 12, "1차탈락": 5, "서류탈락": 1 }, isDefault: true, createdAt: new Date().toISOString() },
-          { id: "2", name: "대한항공", scores: { "최종합격": 15, "2차탈락": 6, "1차탈락": 5, "서류탈락": 1 }, isDefault: true, createdAt: new Date().toISOString() },
-          { id: "3", name: "현대위아", scores: { "최종합격": 30, "2차탈락": 10, "1차탈락": 5, "서류탈락": 1 }, isDefault: true, createdAt: new Date().toISOString() },
-          { id: "4", name: "LG전자", scores: { "최종합격": 25, "2차탈락": 8, "1차탈락": 5, "서류탈락": 1 }, isDefault: true, createdAt: new Date().toISOString() },
-          { id: "5", name: "콘티넨탈오토모티브코리아", scores: { "최종합격": 20, "2차탈락": 6, "1차탈락": 5, "서류탈락": 1 }, isDefault: true, createdAt: new Date().toISOString() },
-          { id: "6", name: "티에이치앤", scores: { "최종합격": 15, "2차탈락": 5, "1차탈락": 5, "서류탈락": 1 }, isDefault: true, createdAt: new Date().toISOString() }
-        ]
+      companies: [],
+      predictions: [],
+      resultSet: {},
+
+      async init() {
+        await this.loadCompanies();
+        await this.loadPredictions();
+        await this.loadResults();
       },
 
-      init() {
-        if (!localStorage.getItem("companies")) {
-          localStorage.setItem("companies", JSON.stringify(this.defaults.companies));
+      async loadCompanies() {
+        try {
+          const response = await fetch(`${GAS_URL}?action=getCompanies`);
+          this.companies = await response.json();
+        } catch (e) {
+          console.error("기업 로드 실패:", e);
+          this.companies = [];
         }
-        if (!localStorage.getItem("predictions")) {
-          localStorage.setItem("predictions", JSON.stringify([]));
+      },
+
+      async loadPredictions() {
+        try {
+          const response = await fetch(`${GAS_URL}?action=getPredictions`);
+          this.predictions = await response.json();
+        } catch (e) {
+          console.error("예측 로드 실패:", e);
+          this.predictions = [];
         }
-        if (!localStorage.getItem("resultSet")) {
-          localStorage.setItem("resultSet", JSON.stringify({}));
+      },
+
+      async loadResults() {
+        try {
+          const response = await fetch(`${GAS_URL}?action=getResults`);
+          this.resultSet = await response.json();
+        } catch (e) {
+          console.error("결과 로드 실패:", e);
+          this.resultSet = {};
         }
       },
 
       getCompanies() {
-        return JSON.parse(localStorage.getItem("companies") || "[]");
+        return this.companies;
       },
 
-      saveCompanies(companies) {
-        localStorage.setItem("companies", JSON.stringify(companies));
-      },
-
-      addCompany(name, scores) {
-        const companies = this.getCompanies();
-        const id = Date.now().toString();
-        companies.push({ id, name, scores, isDefault: false, createdAt: new Date().toISOString() });
-        this.saveCompanies(companies);
-        return id;
-      },
-
-      updateCompany(id, name, scores) {
-        const companies = this.getCompanies();
-        const idx = companies.findIndex(c => c.id === id);
-        if (idx >= 0) {
-          companies[idx] = { ...companies[idx], name, scores };
-          this.saveCompanies(companies);
+      async addCompany(name, scores) {
+        try {
+          await fetch(GAS_URL, {
+            method: "POST",
+            payload: JSON.stringify({
+              action: "addCompany",
+              name,
+              win: scores["승"],
+              draw: scores["무"],
+              lose: scores["패"]
+            })
+          });
+          await this.loadCompanies();
+          return true;
+        } catch (e) {
+          console.error("회사 추가 실패:", e);
+          return false;
         }
       },
 
-      deleteCompany(id) {
-        const companies = this.getCompanies().filter(c => c.id !== id);
-        this.saveCompanies(companies);
-      },
-
       getPredictions() {
-        return JSON.parse(localStorage.getItem("predictions") || "[]");
+        return this.predictions;
       },
 
-      savePredictions(predictions) {
-        localStorage.setItem("predictions", JSON.stringify(predictions));
-      },
+      async addPrediction(nickname, picks, totalScore) {
+        try {
+          const companies = this.getCompanies();
+          const picksData = {};
+          companies.forEach(c => {
+            picksData[c.name] = picks[c.name] || "";
+          });
 
-      addPrediction(nickname, picks, totalScore) {
-        const predictions = this.getPredictions();
-        predictions.push({
-          id: Date.now().toString(),
-          nickname,
-          picks,
-          totalScore,
-          createdAt: new Date().toISOString(),
-          companySnapshot: Object.keys(picks)
-        });
-        this.savePredictions(predictions);
-      },
-
-      deletePrediction(id) {
-        const predictions = this.getPredictions().filter(p => p.id !== id);
-        this.savePredictions(predictions);
+          await fetch(GAS_URL, {
+            method: "POST",
+            payload: JSON.stringify({
+              action: "addPrediction",
+              nickname,
+              picks: picksData,
+              totalScore
+            })
+          });
+          await this.loadPredictions();
+        } catch (e) {
+          console.error("예측 저장 실패:", e);
+        }
       },
 
       getResultSet() {
-        return JSON.parse(localStorage.getItem("resultSet") || "{}");
+        return this.resultSet;
       },
 
-      saveResultSet(results) {
-        localStorage.setItem("resultSet", JSON.stringify({ ...results, savedAt: new Date().toISOString() }));
+      async saveResultSet(results) {
+        try {
+          for (const [company, result] of Object.entries(results)) {
+            if (result) {
+              await fetch(GAS_URL, {
+                method: "POST",
+                payload: JSON.stringify({
+                  action: "updateResults",
+                  [company]: result
+                })
+              });
+            }
+          }
+          await this.loadResults();
+        } catch (e) {
+          console.error("결과 저장 실패:", e);
+        }
       }
     };
 
-    // ==================== SECTION 2: UI STATE ====================
     const State = {
       ticketSelections: {},
       editingCompanyId: null,
@@ -908,7 +968,6 @@
       lastRankText: ""
     };
 
-    // ==================== SECTION 3: UTILITY ====================
     const $ = (id) => document.getElementById(id);
 
     function showToast(msg = "완료! 📩") {
@@ -941,7 +1000,6 @@
       return date.toLocaleDateString("ko-KR", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
     }
 
-    // ==================== SECTION 4: TAB NAVIGATION ====================
     function bindTabs() {
       document.querySelectorAll(".tab").forEach(btn => {
         btn.addEventListener("click", () => {
@@ -953,44 +1011,55 @@
       });
     }
 
-    // ==================== SECTION 5: 발권기 탭 ====================
     function renderTicketGames() {
       const companies = Storage.getCompanies();
-      const choiceLabels = ["최종합격", "2차탈락", "1차탈락", "서류탈락"];
+      const predictions = Storage.getPredictions();
+      const lastPrediction = predictions.length > 0 ? predictions[predictions.length - 1] : null;
 
-      $("ticketGames").innerHTML = companies.map((c, idx) => `
-        <div class="game">
-          <div class="company">
-            <strong>${idx + 1}. ${c.name}</strong>
-            <small>${Object.entries(c.scores).map(([k, v]) => `${k} ${v}점`).join(" · ")}</small>
-          </div>
-          <div class="choices">
-            <button class="choice win" data-company="${c.name}" data-choice="최종합격">
-              합격
-              <small>+${c.scores["최종합격"]}점</small>
-            </button>
-            <button class="choice draw" data-company="${c.name}" data-choice="2차탈락">
-              2차
-              <small>+${c.scores["2차탈락"]}점</small>
-            </button>
-            <button class="choice lose" data-company="${c.name}" data-choice="1차탈락">
-              1차
-              <small>+${c.scores["1차탈락"]}점</small>
-            </button>
-            <button class="choice" data-company="${c.name}" data-choice="서류탈락">
-              서류
-              <small>+${c.scores["서류탈락"]}점</small>
-            </button>
-          </div>
-        </div>
-      `).join("");
+      const newCompanies = companies.filter(c => !lastPrediction || !lastPrediction.picks[c.name]);
 
-      document.querySelectorAll("#ticketGames .choice").forEach(btn => {
+      $("ticketGames").innerHTML = companies.map((c, idx) => {
+        const isExisting = lastPrediction && lastPrediction.picks[c.name];
+        const isDisabled = isExisting;
+
+        return `
+          <div class="game">
+            <div class="company">
+              <strong>${idx + 1}. ${c.name}</strong>
+              <small>승 ${c.scores["승"]}점 · 무 ${c.scores["무"]}점 · 패 ${c.scores["패"]}점</small>
+              ${isExisting ? `<small style="color: var(--gold);">✓ 이미 선택됨</small>` : ''}
+            </div>
+            <div class="choices">
+              <button class="choice win" data-company="${c.name}" data-choice="승" ${isDisabled ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''}>
+                승
+                <small>+${c.scores["승"]}점</small>
+              </button>
+              <button class="choice draw" data-company="${c.name}" data-choice="무" ${isDisabled ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''}>
+                무
+                <small>+${c.scores["무"]}점</small>
+              </button>
+              <button class="choice lose" data-company="${c.name}" data-choice="패" ${isDisabled ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''}>
+                패
+                <small>+${c.scores["패"]}점</small>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      if (lastPrediction) {
+        Object.entries(lastPrediction.picks).forEach(([company, choice]) => {
+          const btn = document.querySelector(`#ticketGames .choice[data-company="${company}"][data-choice="${choice}"]`);
+          if (btn) btn.classList.add("active");
+        });
+      }
+
+      document.querySelectorAll("#ticketGames .choice:not([disabled])").forEach(btn => {
         btn.addEventListener("click", () => {
           const company = btn.dataset.company;
           const choice = btn.dataset.choice;
           State.ticketSelections[company] = choice;
-          document.querySelectorAll(`#ticketGames .choice[data-company="${company}"]`).forEach(b => b.classList.remove("active"));
+          document.querySelectorAll(`#ticketGames .choice[data-company="${company}"]:not([disabled])`).forEach(b => b.classList.remove("active"));
           btn.classList.add("active");
           updateTicketReady();
         });
@@ -1008,25 +1077,75 @@
       $("makeTicketBtn").disabled = !ready;
     }
 
-    function issueTicket() {
-      const nickname = $("nickname").value.trim();
-      Storage.addPrediction(nickname, { ...State.ticketSelections }, ticketTotal());
-      resetTicket();
-      updateRecordPanel();
-      showToast("발권 완료! 🎫");
+    function makeTicketText() {
+      const companies = Storage.getCompanies();
+      const rows = companies.map(c => `${c.name}: ${State.ticketSelections[c.name]}`).join("\n");
+      return `[TJ 취업 승무패]\n` +
+        `참가자: ${$("nickname").value.trim()}\n` +
+        `점수 합계: ${ticketTotal()}점\n\n` +
+        `${rows}\n\n` +
+        `합격을 기원합니다!!!!!!!!!\n` +
+        `취뽀의 신이 TJ와 함께하길... 🌈💼🔥`;
+    }
+
+    function renderTicketPreview() {
+      const companies = Storage.getCompanies();
+      const predictions = Storage.getPredictions();
+      const lastPrediction = predictions.length > 0 ? predictions[predictions.length - 1] : null;
+
+      const allSelections = lastPrediction ? { ...lastPrediction.picks, ...State.ticketSelections } : State.ticketSelections;
+
+      $("ticketRows").innerHTML = companies.map(c => `
+        <div class="ticketRow">
+          <strong>${c.name}</strong>
+          <span class="badgeChoice ${allSelections[c.name]}">${allSelections[c.name]}</span>
+        </div>
+      `).join("");
+
+      const total = companies.reduce((sum, c) => sum + (allSelections[c.name] ? c.scores[allSelections[c.name]] : 0), 0);
+      $("ticketTotal").textContent = total;
+      $("ticketTotalBox").style.display = "block";
+
+      State.lastTicketText = `[TJ 취업 승무패]\n` +
+        `참가자: ${$("nickname").value.trim()}\n` +
+        `점수 합계: ${total}점\n\n` +
+        companies.map(c => `${c.name}: ${allSelections[c.name]}`).join("\n") +
+        `\n\n합격을 기원합니다!!!!!!!!!\n취뽀의 신이 TJ와 함께하길... 🌈💼🔥`;
+
+      Storage.addPrediction($("nickname").value.trim(), allSelections, total);
+      updateDashboard();
+      showToast("예측권 업데이트 완료! 🎫");
     }
 
     function resetTicket() {
+      const predictions = Storage.getPredictions();
+      const lastPrediction = predictions.length > 0 ? predictions[predictions.length - 1] : null;
+
       State.ticketSelections = {};
-      $("nickname").value = "";
+      $("nickname").value = lastPrediction ? lastPrediction.nickname : "";
       $("ticketRows").innerHTML = `<div style="color:var(--muted); font-weight:900; text-align:center; padding:40px 0;">왼쪽에서 선택하면 여기에 예측권이 발권됩니다.</div>`;
       $("ticketTotalBox").style.display = "none";
       State.lastTicketText = "";
-      document.querySelectorAll("#ticketGames .choice").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll("#ticketGames .choice:not([disabled])").forEach(b => b.classList.remove("active"));
       updateTicketReady();
+
+      if (lastPrediction) {
+        $("clearPreviousBtn").style.display = "inline-block";
+      }
     }
 
-    // ==================== SECTION 6: 기업 관리 탭 ====================
+    function clearPreviousSelection() {
+      const predictions = Storage.getPredictions();
+      if (predictions.length > 0) {
+        predictions.pop();
+        Storage.predictions = predictions;
+        resetTicket();
+        renderTicketGames();
+        updateDashboard();
+        showToast("이전 선택이 제거되었습니다.");
+      }
+    }
+
     function renderCompanyList() {
       const companies = Storage.getCompanies();
       $("companyList").innerHTML = companies.map(c => `
@@ -1037,7 +1156,6 @@
           </div>
           <div class="companyActions">
             <button class="iconBtn" onclick="editCompany('${c.id}')">수정</button>
-            ${!c.isDefault ? `<button class="iconBtn delBtn" onclick="deleteCompany('${c.id}')">삭제</button>` : ""}
           </div>
         </div>
       `).join("");
@@ -1050,148 +1168,59 @@
         const company = companies.find(c => c.id === companyId);
         $("modalTitle").textContent = "기업 수정";
         $("modalCompanyName").value = company.name;
-        $("modalFinal").value = company.scores["최종합격"];
-        $("modalSecond").value = company.scores["2차탈락"];
-        $("modalFirst").value = company.scores["1차탈락"];
-        $("modalDocument").value = company.scores["서류탈락"];
+        $("modalWin").value = company.scores["승"];
+        $("modalDraw").value = company.scores["무"];
+        $("modalLose").value = company.scores["패"];
       } else {
         State.editingCompanyId = null;
         $("modalTitle").textContent = "새 기업 추가";
         $("modalCompanyName").value = "";
-        $("modalFinal").value = "";
-        $("modalSecond").value = "";
-        $("modalFirst").value = "";
-        $("modalDocument").value = "";
+        $("modalWin").value = "";
+        $("modalDraw").value = "";
+        $("modalLose").value = "";
       }
       $("companyModal").classList.add("show");
     }
 
     window.editCompany = (id) => showCompanyModal(id);
-    window.deleteCompany = (id) => {
-      if (confirm("정말 삭제하시겠습니까?")) {
-        Storage.deleteCompany(id);
-        renderCompanyList();
-        renderTicketGames();
-        renderResultGrid();
-        updateRankPanel();
-        showToast("기업이 삭제되었습니다.");
-      }
-    };
 
-    // ==================== SECTION 7: 발권 기록 탭 ====================
-    function updateRecordPanel() {
+    function updateDashboard() {
       const predictions = Storage.getPredictions();
-      $("totalRecordCount").textContent = predictions.length;
+      $("predictionCount").textContent = predictions.length;
 
       if (predictions.length === 0) {
-        $("recordTableBody").innerHTML = "";
-        $("emptyRecord").style.display = "block";
+        $("dashboardTableBody").innerHTML = "";
+        $("emptyDashboard").style.display = "block";
         return;
       }
 
-      $("emptyRecord").style.display = "none";
-      $("recordTableBody").innerHTML = predictions.map(p => `
+      $("emptyDashboard").style.display = "none";
+      $("dashboardTableBody").innerHTML = predictions.map(p => `
         <tr>
           <td><strong>${p.nickname}</strong></td>
           <td>${formatDate(p.createdAt)}</td>
           <td>${p.totalScore}점</td>
-          <td style="font-size: 12px;">
-            ${Object.entries(p.picks).slice(0, 3).map(([k, v]) => `<span class="badgeChoice ${v}" style="padding: 4px 8px; font-size: 11px; margin-right: 4px;">${v}</span>`).join("")}
-            ${Object.keys(p.picks).length > 3 ? '...' : ''}
-          </td>
-          <td>
-            <button class="iconBtn delBtn" onclick="deleteRecordUI('${p.id}')" style="font-size: 11px;">삭제</button>
-          </td>
+          <td>${Object.keys(p.picks).length}</td>
+          <td></td>
         </tr>
       `).join("");
     }
 
-    window.deleteRecordUI = (id) => {
-      if (confirm("발권 기록을 삭제하시겠습니까?")) {
-        Storage.deletePrediction(id);
-        updateRecordPanel();
-        updateRankPanel();
-        showToast("발권 기록이 삭제되었습니다.");
-      }
-    };
-
-    // ==================== SECTION 8: 순위표 탭 ====================
-    function updateRankPanel() {
-      const predictions = Storage.getPredictions();
-      const resultSet = Storage.getResultSet();
-      const companies = Storage.getCompanies();
-
-      $("predictionCount").textContent = predictions.length;
-
-      if (predictions.length === 0) {
-        $("rankCardContainer").innerHTML = '<div class="emptyState" style="padding: 40px 0;">아직 예측권이 없습니다.</div>';
-        $("copyRankBtnContainer").style.display = "none";
-        return;
-      }
-
-      // 결과가 없으면 메시지만 표시
-      if (!resultSet.savedAt || Object.keys(resultSet).length === 0) {
-        $("rankCardContainer").innerHTML = '<div class="emptyState" style="padding: 40px 0;">📝 결과를 입력하면 순위가 자동으로 계산됩니다.</div>';
-        $("copyRankBtnContainer").style.display = "none";
-        return;
-      }
-
-      // 결과가 있으면 순위 계산
-      const ranked = predictions.map(p => {
-        let score = 0;
-        let correct = 0;
-
-        companies.forEach(c => {
-          const pick = p.picks[c.name];
-          const actual = resultSet[c.name];
-          if (pick && actual && pick === actual) {
-            const pts = c.scores[actual];
-            score += pts;
-            correct++;
-          }
-        });
-
-        return { ...p, score, correct };
-      }).sort((a, b) => b.score - a.score || b.correct - a.correct || a.nickname.localeCompare(b.nickname, "ko"));
-
-      $("rankCardContainer").innerHTML = `
-        <div class="rankCard" style="margin: 0;">
-          ${ranked.map((p, idx) => `
-            <div class="rankRow" style="padding: 12px 14px;">
-              <div class="rankNo" style="width: 38px; height: 38px; font-size: 14px;">${idx + 1}</div>
-              <div>
-                <div class="rankName" style="font-size: 15px;">${idx === 0 ? "👑 " : ""}${p.nickname}</div>
-                <div class="rankDetail" style="font-size: 11px;">${p.correct}/${companies.length} 적중</div>
-              </div>
-              <div class="rankScore" style="font-size: 18px;">${p.score}점</div>
-            </div>
-          `).join("")}
-        </div>
-      `;
-
-      // 순위표 복사 버튼 표시
-      $("copyRankBtnContainer").style.display = "flex";
-    }
-
-    // ==================== SECTION 8: 결과 입력 탭 ====================
     function renderResultGrid() {
       const companies = Storage.getCompanies();
       const results = Storage.getResultSet();
       $("resultGrid").innerHTML = companies.map(c => `
         <div class="officialItem">
           <b>${c.name}</b>
-          <select data-company="${c.name}" onchange="updateResultSelection('${c.name}', this.value)">
+          <select data-company="${c.name}">
             <option value="">선택...</option>
-            <option value="최종합격" ${results[c.name] === "최종합격" ? "selected" : ""}>최종합격</option>
-            <option value="2차탈락" ${results[c.name] === "2차탈락" ? "selected" : ""}>2차탈락</option>
-            <option value="1차탈락" ${results[c.name] === "1차탈락" ? "selected" : ""}>1차탈락</option>
-            <option value="서류탈락" ${results[c.name] === "서류탈락" ? "selected" : ""}>서류탈락</option>
+            <option value="승" ${results[c.name] === "승" ? "selected" : ""}>승</option>
+            <option value="무" ${results[c.name] === "무" ? "selected" : ""}>무</option>
+            <option value="패" ${results[c.name] === "패" ? "selected" : ""}>패</option>
           </select>
         </div>
       `).join("");
     }
-
-    window.updateResultSelection = (company, value) => {};
 
     function saveResult() {
       const companies = Storage.getCompanies();
@@ -1210,7 +1239,7 @@
 
       Storage.saveResultSet(results);
       $("resultStatus").style.display = "block";
-      updateRankPanel(); // 자동으로 순위 계산 & 표시
+      $("lastResultTime").textContent = new Date().toLocaleString("ko-KR");
       showToast("결과가 저장되었습니다! 📝");
     }
 
@@ -1219,35 +1248,93 @@
         Storage.saveResultSet({});
         renderResultGrid();
         $("resultStatus").style.display = "none";
-        updateRankPanel(); // 순위 계산 해제
         showToast("결과가 초기화되었습니다.");
       }
     }
 
-    // ==================== SECTION 10: 초기화 및 이벤트 바인딩 ====================
-    function init() {
-      Storage.init();
+    function calculateRankings() {
+      const resultSet = Storage.getResultSet();
+      const companies = Storage.getCompanies();
+      const predictions = Storage.getPredictions();
+
+      if (Object.keys(resultSet).length === 0) {
+        alert("먼저 결과를 저장해주세요.");
+        return;
+      }
+
+      if (predictions.length === 0) {
+        alert("예측권이 없습니다.");
+        return;
+      }
+
+      const ranked = predictions.map(p => {
+        let score = 0;
+        let correct = 0;
+
+        companies.forEach(c => {
+          const pick = p.picks[c.name];
+          const actual = resultSet[c.name];
+          if (pick && actual && pick === actual) {
+            const pts = c.scores[actual];
+            score += pts;
+            correct++;
+          }
+        });
+
+        return { ...p, score, correct };
+      }).sort((a, b) => b.score - a.score || b.correct - a.correct || a.nickname.localeCompare(b.nickname, "ko"));
+
+      $("participantCount").textContent = ranked.length;
+      $("rankCard").innerHTML = ranked.map((p, idx) => `
+        <div class="rankRow">
+          <div class="rankNo">${idx + 1}</div>
+          <div>
+            <div class="rankName">${idx === 0 ? "👑 " : ""}${p.nickname}</div>
+            <div class="rankDetail">${p.correct}/${companies.length} 적중</div>
+          </div>
+          <div class="rankScore">${p.score}점</div>
+        </div>
+      `).join("");
+
+      State.lastRankText = `[TJ 취업 승무패 최종 순위]\n` +
+        `실제 결과\n` +
+        companies.map(c => `${c.name}: ${resultSet[c.name] || "-"}`).join("\n") +
+        `\n\n` +
+        ranked.map((p, idx) => `${idx + 1}위 ${p.nickname} - ${p.score}점 (${p.correct}/${companies.length} 적중)`).join("\n") +
+        `\n\n합격을 기원합니다!!!!!!!!!`;
+
+      $("results").classList.add("show");
+      $("emptyResult").style.display = "none";
+      showToast("순위 계산 완료! 🏆");
+    }
+
+    async function init() {
+      await Storage.init();
       bindTabs();
       renderTicketGames();
       renderCompanyList();
       renderResultGrid();
-      updateRecordPanel();
-      updateRankPanel();
+      updateDashboard();
 
-      // 발권기
       $("nickname").addEventListener("input", updateTicketReady);
-      $("makeTicketBtn").addEventListener("click", issueTicket);
+      $("makeTicketBtn").addEventListener("click", renderTicketPreview);
       $("resetTicketBtn").addEventListener("click", resetTicket);
+      $("clearPreviousBtn").addEventListener("click", clearPreviousSelection);
+      $("copyTicketBtn").addEventListener("click", () => {
+        if (!State.lastTicketText) {
+          alert("먼저 예측권을 발권해주세요.");
+          return;
+        }
+        copyText(State.lastTicketText, "예측권 복사 완료! 📩");
+      });
 
-      // 기업 관리
       $("addCompanyBtn").addEventListener("click", () => showCompanyModal(null));
-      $("modalSaveBtn").addEventListener("click", () => {
+      $("modalSaveBtn").addEventListener("click", async () => {
         const name = $("modalCompanyName").value.trim();
         const scores = {
-          "최종합격": parseInt($("modalFinal").value) || 0,
-          "2차탈락": parseInt($("modalSecond").value) || 0,
-          "1차탈락": parseInt($("modalFirst").value) || 0,
-          "서류탈락": parseInt($("modalDocument").value) || 0
+          "승": parseInt($("modalWin").value) || 0,
+          "무": parseInt($("modalDraw").value) || 0,
+          "패": parseInt($("modalLose").value) || 0
         };
 
         if (!name) {
@@ -1255,53 +1342,25 @@
           return;
         }
 
-        if (State.editingCompanyId) {
-          Storage.updateCompany(State.editingCompanyId, name, scores);
-        } else {
-          Storage.addCompany(name, scores);
-        }
-
+        await Storage.addCompany(name, scores);
         $("companyModal").classList.remove("show");
         renderCompanyList();
         renderTicketGames();
         renderResultGrid();
-        updateRankPanel();
         showToast("저장되었습니다! ✓");
       });
       $("modalCancelBtn").addEventListener("click", () => $("companyModal").classList.remove("show"));
 
-      // 결과 입력
       $("saveResultBtn").addEventListener("click", saveResult);
       $("clearResultBtn").addEventListener("click", clearResult);
 
-      // 순위표 복사
+      $("calcBtn").addEventListener("click", calculateRankings);
       $("copyRankBtn").addEventListener("click", () => {
-        const resultSet = Storage.getResultSet();
-        const companies = Storage.getCompanies();
-        const predictions = Storage.getPredictions();
-
-        const ranked = predictions.map(p => {
-          let score = 0;
-          let correct = 0;
-          companies.forEach(c => {
-            const pick = p.picks[c.name];
-            const actual = resultSet[c.name];
-            if (pick && actual && pick === actual) {
-              score += c.scores[actual];
-              correct++;
-            }
-          });
-          return { ...p, score, correct };
-        }).sort((a, b) => b.score - a.score || b.correct - a.correct || a.nickname.localeCompare(b.nickname, "ko"));
-
-        const rankText = `[TJ 취업 승무패 최종 순위]\n` +
-          `실제 결과\n` +
-          companies.map(c => `${c.name}: ${resultSet[c.name] || "-"}`).join("\n") +
-          `\n\n` +
-          ranked.map((p, idx) => `${idx + 1}위 ${p.nickname} - ${p.score}점 (${p.correct}/${companies.length} 적중)`).join("\n") +
-          `\n\n합격을 기원합니다!!!!!!!!!`;
-
-        copyText(rankText, "순위표 복사 완료! 🏆");
+        if (!State.lastRankText) {
+          alert("먼저 순위를 계산해주세요.");
+          return;
+        }
+        copyText(State.lastRankText, "순위표 복사 완료! 🏆");
       });
     }
 
